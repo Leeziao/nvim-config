@@ -31,13 +31,4 @@ return {
 			})
 		end,
 	},
-	{
-		"stevearc/overseer.nvim",
-		dependencies = { "nvim-telescope/telescope.nvim", "stevearc/dressing.nvim" },
-		config = function()
-			require("overseer").setup({
-				templates = { "builtin", "user.cpp_build", "user.python_test_run" },
-			})
-		end,
-	},
 }
