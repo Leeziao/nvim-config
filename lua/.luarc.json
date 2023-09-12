@@ -22,5 +22,9 @@
         "/home/lza/.local/share/nvim/lazy/nvim-lspconfig/lua",
         "/home/lza/.config/nvim/lua",
         "${3rd}/luv/library"
+    ],
+    "workspace.checkThirdParty": false,
+    "diagnostics.globals": [
+        "ocal"
     ]
 }

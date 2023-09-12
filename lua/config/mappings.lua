@@ -49,7 +49,6 @@ maps.n["j"] = { "v:count == 0 ? 'gj' : 'j'", expr = true, desc = "Move cursor do
 maps.n["k"] = { "v:count == 0 ? 'gk' : 'k'", expr = true, desc = "Move cursor up" }
 maps.n["<leader>w"] = { "<cmd>w<cr>", desc = "Save" }
 maps.n["<leader>q"] = { "<cmd>confirm q<cr>", desc = "Quit" }
-maps.n["<leader>n"] = { "<cmd>enew<cr>", desc = "New File" }
 maps.n["gx"] = { system_open, desc = "Open file under cursor with system app" }
 maps.n["|"] = { "<cmd>vsplit<cr>", desc = "Vertical Split" }
 maps.n["\\"] = { "<cmd>split<cr>", desc = "Horizontal Split" }
@@ -76,17 +75,7 @@ if is_available('Comment.nvim') then
 end
 
 if is_available "neo-tree.nvim" then
-  maps.n["<leader>e"] = { "<cmd>Neotree toggle<cr>", desc = "Toggle Explorer" }
-  maps.n["<leader>o"] = {
-    function()
-      if vim.bo.filetype == "neo-tree" then
-        vim.cmd.wincmd "p"
-      else
-        vim.cmd.Neotree "focus"
-      end
-    end,
-    desc = "Toggle Explorer Focus",
-  }
+  maps.n["<leader>e"] = { "<cmd>Neotree toggle reveal<cr>", desc = "Toggle Explorer" }
 end
 
 if is_available('resession.nvim') then
@@ -201,12 +190,51 @@ if is_available "toggleterm.nvim" then
   maps.t["<F7>"] = { "<cmd>ToggleTerm<cr>", desc = "Toggle terminal" }
 end
 
-if is_available('trouble.nvim') then
-  maps.n["<leader>ud"] = { "<cmd>TroubleToggle<CR>", desc="Toggle Trouble" }
+-- if is_available('trouble.nvim') then
+--   maps.n["<leader>ld"] = { "<cmd>TroubleToggle<CR>", desc="Toggle Trouble" }
+-- end
+
+if is_available('lspsaga.nvim') then
+  maps.n["<leader>lo"] = { "<cmd>Lspsaga outline<CR>", desc="Toggle Outline" }
+  maps.n['<leader>lr'] = { '<cmd>Lspsaga rename<CR>', desc="Rename Symbol" }
+  maps.n['<leader>la'] = { '<cmd>Lspsaga code_action<CR>', desc="Code Action" }
+  maps.n['<leader>lb'] = { '<cmd>Lspsaga show_buf_diagnostics ++normal<CR>', desc="Show Buffer Diagnostics" }
+  maps.n['<leader>lw'] = { '<cmd>Lspsaga show_workspace_diagnostics ++normal<CR>', desc="Show Workspace Diagnostics" }
+  maps.n['K'] = { '<cmd>Lspsaga hover_doc<CR>', desc="Show hover doc" }
+
+  -- Diagnostic jump
+  -- You can use <C-o> to jump back to your previous location
+  maps.n["[E"] = { "<cmd>Lspsaga diagnostic_jump_prev<CR>", desc='Jump to previous diagnostic'}
+  maps.n["]E"] = { "<cmd>Lspsaga diagnostic_jump_next<CR>" , desc='Jump to next diagnostic'}
+
+  -- Diagnostic jump with filters such as only jumping to an error
+  maps.n["[e"] = { function()
+    require("lspsaga.diagnostic"):goto_prev({ severity = vim.diagnostic.severity.ERROR })
+  end, desc="Jump to previous error"}
+  maps.n["]e"] = { function()
+    require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.ERROR })
+  end, desc = "Jump to next error"}
 end
 
+if is_available('code_runner.nvim') then
+  maps.n["<leader>n"] = { "<cmd>CodeRunnerAutoRun<CR>", desc="Auto Run Task" }
+  maps.n["<leader>lh"] = { "<cmd>CodeRunnerHistory<CR>", desc="History Runned Task" }
+end
+
+if is_available('gitsigns.nvim') then
+  local gs  = require('gitsigns')
+  maps.n['<leader>ub'] = { function() gs.toggle_current_line_blame() end, desc="Toggle Line Blame" }
+  maps.n['<leader>ud'] = { function() gs.diffthis() end, desc="Toggle Diff View" }
+end
+
+maps.n['<leader>u/'] = { function ()
+  vim.opt.formatoptions:remove( {'o', 'c', 'r' })
+end, desc="Close Continuous Comments" }
+
 -- LSP configurations
-maps.n['K'] = { function () vim.lsp.buf.hover() end }
+maps.n['<leader>lf'] = { function ()
+  vim.lsp.buf.format()
+end, desc="Format Buffer" }
 
 maps.n["<C-h>"] = { "<C-w>h", desc = "Move to left split" }
 maps.n["<C-j>"] = { "<C-w>j", desc = "Move to below split" }
